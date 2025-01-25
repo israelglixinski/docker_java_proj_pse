@@ -1,0 +1,29 @@
+# Use uma imagem base do Ubuntu
+FROM ubuntu:latest
+
+# Instale o OpenJDK 17
+USER root
+RUN apt-get update
+RUN apt-get install -y openjdk-17-jdk
+RUN apt install -y git
+
+RUN mkdir /home/app
+WORKDIR /home
+
+RUN rmdir app
+RUN mkdir app
+
+WORKDIR /home/app
+
+# Clone o repositório Git
+# http://172.32.1.71/gitlab/trocha/pse_api.git
+RUN git clone http://172.32.1.71/gitlab/trocha/pse_api.git
+
+WORKDIR /home/app/pse_api
+COPY start.sh /home/app/pse_api
+
+RUN chmod 777 *
+# Exponha a porta padrão do PostgreSQL
+EXPOSE 8080
+
+CMD ["sh","/home/app/pse_api/start.sh"]
